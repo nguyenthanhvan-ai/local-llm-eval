@@ -50,7 +50,21 @@ Scoring is keyword- and pattern-based, so it is a rough check, not a full evalua
 
 ## Results
 
-See [`results/summary.md`](results/summary.md) after running the script.
+Run on 16 test cases (11 answerable, 5 unanswerable), temperature 0, via Ollama.
+
+| Model | Accuracy (answerable, n=11) | Refusal rate (unanswerable, n=5) | Median latency (s) |
+|---|---|---|---|
+| qwen3-8b | 82% | 100% | 4.87 |
+| stheno-v3.2-8b | 100% | 80% | 8.80 |
+| ohashi-nemo-12b | 91% | 80% | 8.05 |
+
+Findings:
+- Stheno and Ohashi both answered a question the document does not cover (`u05`, about `print()`), instead of refusing. This is the hallucination case.
+- Qwen3 refused two questions whose answers are in the document (`n02`, `p02`), so it was over-cautious. Ohashi also refused `n02`.
+- Every failure is a model error; the scoring matched the answers. `n02` failed for two models, so its wording may be worth checking in a larger test set.
+- The test set is small. One item changes a score by 9 to 20 percentage points, so treat these numbers as preliminary.
+
+Full answers are in [`results/answers.csv`](results/answers.csv), and the summary table is in [`results/summary.md`](results/summary.md).
 
 ## Limitations
 
